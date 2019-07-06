@@ -1,11 +1,5 @@
-Spring整合Junit4进行单元测试
-<dependency>  
-  <groupId>org.aspectj</groupId>  
-  <artifactId>aspectjrt</artifactId>  
-  <version>1.8.0</version>  
-</dependency>  
-<dependency>  
-  <groupId>org.aspectj</groupId>  
-  <artifactId>aspectjweaver</artifactId>  
-  <version>1.8.0</version>  
-</dependency>  
+<dependency>
+    <groupId>com.aliyun</groupId>
+    <artifactId>aliyun-java-sdk-core</artifactId>
+    <version>3.7.1</version>
+</dependency>
