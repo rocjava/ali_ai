@@ -18,7 +18,7 @@ import java.util.concurrent.locks.ReentrantLock;
 public class TaskServiceImpl implements TaskService {
 
     //如果部署一台机子可以放在本地，如果是多台机子需要平均分配或者使用Redis分布式锁
-    private static AtomicInteger size = new AtomicInteger(0);
+    private static AtomicInteger currentSize = new AtomicInteger(0);
 
     private Lock lock =  new ReentrantLock();
 
@@ -37,8 +37,9 @@ public class TaskServiceImpl implements TaskService {
     public void produce() {
         lock.lock();
         try{
-            System.out.println("====>TaskService.produce====>start====>currentSize====>" +size);
-            while(size.intValue() > Constant.MAX_CONCURRENCY){
+            System.out.println("====>TaskService.produce====>start====>currentSize====>" +currentSize);
+            while(currentSize.intValue() >= Constant.MAX_CONCURRENCY){
+                Thread.sleep(30000);//睡半分钟 等待去查询
                 produceCondition.await();
             }
             Voice2TextVo voice2TextVo = voice2TextService.queryInitVoice();
@@ -49,8 +50,8 @@ public class TaskServiceImpl implements TaskService {
                 voice2TextVo.setTaskId(taskId);
                 voice2TextService.updateVoiceTaskId(voice2TextVo);
             }
-            size.getAndIncrement();
-            System.out.println("====>TaskService.produce====>end====>currentSize====>" +size);
+            currentSize.getAndIncrement();
+            System.out.println("====>TaskService.produce====>end====>currentSize====>" +currentSize);
             consumeCondition.notify();
         }catch (Exception e){
             e.printStackTrace();
@@ -64,8 +65,8 @@ public class TaskServiceImpl implements TaskService {
     public void consume(Voice2TextVo voice2TextVo) {
         lock.lock();
         try{
-            System.out.println("====>TaskService.consume====>start====>currentSize====>" +size);
-            while(size.intValue() <= Constant.MAX_CONCURRENCY){
+            System.out.println("====>TaskService.consume====>start====>currentSize====>" +currentSize);
+            while(currentSize.intValue() <= 0){
                 consumeCondition.await();
             }
             Voice2TextVo vo = voice2TextService.queryProcessingVoice();
@@ -73,9 +74,9 @@ public class TaskServiceImpl implements TaskService {
             vo.setFileJson(result);
             System.out.println("====>TaskService.produce====>voice====>" +voice2TextVo.getCallId() +"====>taskId====>" +voice2TextVo.getTaskId() +"====>result====>" +result);
             voice2TextService.updateVoiceTaskResult(vo);
-            size.getAndDecrement();
-            System.out.println("====>TaskService.consume====>end====>currentSize====>" +size);
-            produceCondition.notify();
+            currentSize.getAndDecrement();
+            System.out.println("====>TaskService.consume====>end====>currentSize====>" +currentSize);
+            produceCondition.notifyAll();
         }catch (Exception e){
             e.printStackTrace();
         }finally {
