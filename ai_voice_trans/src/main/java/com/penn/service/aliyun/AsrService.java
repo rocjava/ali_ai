@@ -1,4 +1,4 @@
-package com.penn.aliyun;
+package com.penn.service.aliyun;
 
 public interface AsrService {
 

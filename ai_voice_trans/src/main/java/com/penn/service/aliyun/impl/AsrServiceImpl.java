@@ -1,4 +1,4 @@
-package com.penn.aliyun.impl;
+package com.penn.service.aliyun.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.aliyuncs.CommonRequest;
@@ -6,7 +6,7 @@ import com.aliyuncs.CommonResponse;
 import com.aliyuncs.IAcsClient;
 import com.aliyuncs.exceptions.ClientException;
 import com.aliyuncs.http.MethodType;
-import com.penn.aliyun.AsrService;
+import com.penn.service.aliyun.AsrService;
 import com.penn.constant.Constant;
 import com.penn.factory.IAcsClientFactory;
 import org.springframework.stereotype.Service;

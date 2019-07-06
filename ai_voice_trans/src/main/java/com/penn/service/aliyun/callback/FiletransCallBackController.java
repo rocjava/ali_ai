@@ -1,4 +1,4 @@
-package com.penn.aliyun.callback;
+package com.penn.service.aliyun.callback;
 
 import com.alibaba.fastjson.JSONObject;
 import com.penn.constant.Constant;

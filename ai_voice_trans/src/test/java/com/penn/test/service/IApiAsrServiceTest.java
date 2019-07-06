@@ -1,6 +1,6 @@
 package com.penn.test.service;
 
-import com.penn.aliyun.AsrService;
+import com.penn.service.aliyun.AsrService;
 import com.penn.test.AsrApplicationTests;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
